@@ -35,6 +35,7 @@ func operation(for opcode: Opcode) -> Operation {
 
 func run(_ input: ProgramState, _ position: Int = 0) -> ProgramState {
     var output = input
+    
     guard let opcode = Opcode(rawValue: input[position]) else {
         fatalError("Invalid Opcode")
     }
@@ -43,8 +44,11 @@ func run(_ input: ProgramState, _ position: Int = 0) -> ProgramState {
     case .termination:
         return output
     case .addition, .multiplication:
-        
-        output[input[position + 3]] = operation(for: opcode)(input[input[position + 1]], input[input[position + 2]])
+        output[input[position + 3]]
+            = operation(for: opcode)(
+                input[input[position + 1]],
+                input[input[position + 2]]
+        )
         return run(output, position + 4)
     }
 }
