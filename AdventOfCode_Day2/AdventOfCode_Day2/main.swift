@@ -22,21 +22,30 @@ enum Opcode: Int {
     case termination = 99
 }
 
+func operation(for opcode: Opcode) -> Operation {
+    switch opcode {
+    case .addition:
+        return add
+    case .multiplication:
+        return multiply
+    default:
+        fatalError("Invalid Opcode for Operation")
+    }
+}
+
 func run(_ input: ProgramState, _ position: Int = 0) -> ProgramState {
     var output = input
-    let opcode = Opcode(rawValue: input[position])
+    guard let opcode = Opcode(rawValue: input[position]) else {
+        fatalError("Invalid Opcode")
+    }
     
     switch opcode {
     case .termination:
         return output
-    case .addition:
-        output[input[position + 3]] = add(input[input[position + 1]], input[input[position + 2]])
+    case .addition, .multiplication:
+        
+        output[input[position + 3]] = operation(for: opcode)(input[input[position + 1]], input[input[position + 2]])
         return run(output, position + 4)
-    case .multiplication:
-        output[input[position + 3]] = multiply(input[input[position + 1]], input[input[position + 2]])
-        return run(output, position + 4)
-    default:
-        fatalError("Invalid Opcode")
     }
 }
 
